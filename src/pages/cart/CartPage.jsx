@@ -22,6 +22,7 @@ export const CartPage = () => {
 
   // Active Redux State
   const { items, totalAmount, totalQuantity } = useSelector((state) => state.cart);
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const handleQtyChange = (id, currentQty, stock, increment) => {
     let newQty = currentQty;
@@ -46,6 +47,15 @@ export const CartPage = () => {
   const handleRemove = (id, name) => {
     dispatch(removeFromCart(id));
     toast.info(`Removed ${name} from bag.`);
+  };
+
+  const handleProceedToCheckout = () => {
+    if (!isAuthenticated) {
+      toast.warn("Vui lòng đăng nhập để tiến hành thanh toán!");
+      navigate("/login?redirect=/checkout");
+    } else {
+      navigate("/checkout");
+    }
   };
 
   // Math totals
@@ -218,7 +228,7 @@ export const CartPage = () => {
           </div>
 
           <button
-            onClick={() => navigate("/checkout")}
+            onClick={handleProceedToCheckout}
             className="w-full bg-neutral-950 text-white font-bold text-xs tracking-widest uppercase h-12 flex items-center justify-center gap-1.5 hover:bg-neutral-850 transition-colors"
           >
             Proceed to Checkout

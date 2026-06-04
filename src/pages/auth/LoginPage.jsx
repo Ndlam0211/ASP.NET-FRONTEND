@@ -30,7 +30,10 @@ export const LoginPage = () => {
   const { loading, error, isAuthenticated } = useSelector((state) => state.auth);
 
   // Check redirect URL query (e.g. if loaded from checkout)
-  const redirectTarget = searchParams.get("redirect") || "/";
+  let redirectTarget = searchParams.get("redirect") || "/";
+  if (redirectTarget && !redirectTarget.startsWith("/") && !redirectTarget.startsWith("http")) {
+    redirectTarget = "/" + redirectTarget;
+  }
 
   useEffect(() => {
     if (isAuthenticated) {

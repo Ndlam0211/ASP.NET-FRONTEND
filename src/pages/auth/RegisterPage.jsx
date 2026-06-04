@@ -30,7 +30,10 @@ export const RegisterPage = () => {
   // Redux Auth States
   const { loading, error, isAuthenticated } = useSelector((state) => state.auth);
 
-  const redirectTarget = searchParams.get("redirect") || "/";
+  let redirectTarget = searchParams.get("redirect") || "/";
+  if (redirectTarget && !redirectTarget.startsWith("/") && !redirectTarget.startsWith("http")) {
+    redirectTarget = "/" + redirectTarget;
+  }
 
   useEffect(() => {
     if (isAuthenticated) {

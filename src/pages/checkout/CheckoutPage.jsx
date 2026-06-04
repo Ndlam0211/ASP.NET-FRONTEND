@@ -66,13 +66,16 @@ export const CheckoutPage = () => {
 
   // Keep fields synchronized if user logs in on checkout page
   useEffect(() => {
-    if (user) {
+    if (!isAuthenticated) {
+      toast.warn("Vui lòng đăng nhập để tiến hành thanh toán!");
+      navigate("/login?redirect=/checkout");
+    } else if (user) {
       setValue("fullName", user.fullName || "");
       setValue("email", user.email || "");
       setValue("phone", user.phone || "");
       setValue("address", user.address || "");
     }
-  }, [user, setValue]);
+  }, [user, isAuthenticated, setValue, navigate]);
 
   // Handle Order Submit
   const handlePlaceOrder = async (formData) => {
@@ -211,17 +214,12 @@ export const CheckoutPage = () => {
             </p>
           </div>
 
-          {!isAuthenticated && (
-            <div className="bg-neutral-50 border border-neutral-200 p-4 text-xs text-neutral-600 flex items-center justify-between gap-4">
-              <span>Checkout as Guest or Save time by logging into your active customer profile instantly.</span>
-              <Link 
-                to="/login?redirect=checkout" 
-                className="bg-neutral-900 text-white font-bold px-4 py-2 hover:bg-neutral-800 text-[10px] tracking-wider uppercase flex-shrink-0"
-              >
-                Sign In
-              </Link>
-            </div>
-          )}
+          <div className="bg-neutral-50 border border-neutral-150 p-4 text-xs text-neutral-600 flex items-center justify-between gap-4 font-mono">
+            <span>Tài khoản: <strong className="text-neutral-900 font-bold">{user?.fullName || user?.email}</strong></span>
+            <span className="text-[10px] uppercase font-bold text-neutral-400 tracking-wider bg-white px-2.5 py-1 border border-neutral-200">
+              Profile Verified
+            </span>
+          </div>
 
           <form onSubmit={handleSubmit(handlePlaceOrder)} className="flex flex-col gap-5">
             
