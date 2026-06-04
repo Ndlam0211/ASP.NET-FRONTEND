@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles, TrendingUp, ShieldCheck, Truck } from "lucide-react";
 import { getProductsThunk } from "../../store/slices/productSlice";
+import { getCategoriesThunk } from "../../store/slices/categorySlice";
 import { postService } from "../../services/postService";
 import ProductGrid from "../../components/product/ProductGrid";
 import { PostCard } from "../../components/blog/PostCard";
@@ -18,9 +19,39 @@ export const HomePage = () => {
   const latestProducts = products.slice(0, 4);
   const featuredProducts = products.length > 4 ? products.slice(4, 8) : products;
 
-  // Load Latest and Featured products (limit to 8) and Latest articles
+  // Helper to resolve high contrast aesthetic visuals for available categories
+  const getCategoryVisuals = (category, fallbackId) => {
+    const defaults = {
+      1: { id: 1, name: "T-Shirts", description: "Premium Combed Cottons", image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600" },
+      2: { id: 2, name: "Shirts", description: "Oxford Twill & Linen", image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600" },
+      3: { id: 3, name: "Hoodies", description: "Heavyweight Fleece", image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600" },
+      7: { id: 7, name: "Accessories", description: "Caps, Bags & Wallets", image: "https://images.unsplash.com/photo-1544816155-12df9643f363?w=600" }
+    };
+
+    if (!category) {
+      return defaults[fallbackId];
+    }
+
+    const defaultImg = defaults[category.id]?.image || "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600";
+    const defaultSub = defaults[category.id]?.description || category.description || "Minimalist Essentials";
+
+    return {
+      id: category.id,
+      name: category.name,
+      description: defaultSub,
+      image: defaultImg
+    };
+  };
+
+  const catData1 = getCategoryVisuals(categories.find(c => c.id === 1) || categories[0], 1);
+  const catData2 = getCategoryVisuals(categories.find(c => c.id === 2) || categories[1], 2);
+  const catData3 = getCategoryVisuals(categories.find(c => c.id === 3) || categories[2], 3);
+  const catData4 = getCategoryVisuals(categories.find(c => c.id === 7) || categories[3], 7);
+
+  // Load Latest and Featured products (limit to 8), categories, and Latest articles
   useEffect(() => {
     dispatch(getProductsThunk({ page: 1, pageSize: 8 }));
+    dispatch(getCategoriesThunk());
 
     const fetchLatestPosts = async () => {
       setPostsLoading(true);
@@ -97,74 +128,74 @@ export const HomePage = () => {
           </Link>
         </div>
 
-        {/* Categories Bento (using 3 hardcoded grids matching premium layouts) */}
+        {/* Categories Bento (using dynamic categories loaded from categoryService) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Link 
-            to="/shop?categoryProductId=1"
+            to={`/shop?categoryProductId=${catData1.id}`}
             className="group relative h-72 md:h-96 overflow-hidden bg-neutral-100 flex items-end p-6 border border-neutral-100 select-none"
           >
             <img
-              src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600"
-              alt="Premium T-Shirts"
+              src={catData1.image}
+              alt={catData1.name}
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               referrerPolicy="no-referrer"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-neutral-950/20 to-transparent z-10" />
             <div className="relative z-20 text-white flex flex-col gap-1">
-              <span className="text-[10px] font-bold font-mono tracking-widest text-neutral-300 uppercase">Premium Combed Cottons</span>
-              <h3 className="text-lg font-black uppercase tracking-wider">T-Shirts Collection</h3>
+              <span className="text-[10px] font-bold font-mono tracking-widest text-neutral-300 uppercase">{catData1.description}</span>
+              <h3 className="text-lg font-black uppercase tracking-wider">{catData1.name} Collection</h3>
             </div>
           </Link>
 
           <Link 
-            to="/shop?categoryProductId=2"
+            to={`/shop?categoryProductId=${catData2.id}`}
             className="group relative h-72 md:h-96 overflow-hidden bg-neutral-100 flex items-end p-6 border border-neutral-100 select-none"
           >
             <img
-              src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600"
-              alt="Premium Shirts"
+              src={catData2.image}
+              alt={catData2.name}
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               referrerPolicy="no-referrer"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-neutral-950/20 to-transparent z-10" />
             <div className="relative z-20 text-white flex flex-col gap-1">
-              <span className="text-[10px] font-bold font-mono tracking-widest text-neutral-300 uppercase">Oxford Twill & Linen</span>
-              <h3 className="text-lg font-black uppercase tracking-wider">Shirts & Blouses</h3>
+              <span className="text-[10px] font-bold font-mono tracking-widest text-neutral-300 uppercase">{catData2.description}</span>
+              <h3 className="text-lg font-black uppercase tracking-wider">{catData2.name} Collection</h3>
             </div>
           </Link>
 
           <div className="grid grid-cols-1 gap-4">
             <Link 
-              to="/shop?categoryProductId=3"
+              to={`/shop?categoryProductId=${catData3.id}`}
               className="group relative h-44 md:h-[11.5rem] overflow-hidden bg-neutral-100 flex items-end p-6 border border-neutral-100 select-none"
             >
               <img
-                src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600"
-                alt="Hoodies"
+                src={catData3.image}
+                alt={catData3.name}
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-neutral-950/20 to-transparent z-10" />
               <div className="relative z-20 text-white flex flex-col gap-1">
-                <span className="text-[10px] font-bold font-mono tracking-widest text-neutral-300 uppercase">Heavyweight Fleece</span>
-                <h3 className="text-base font-black uppercase tracking-wider">Cozy Hoodies</h3>
+                <span className="text-[10px] font-bold font-mono tracking-widest text-neutral-300 uppercase">{catData3.description}</span>
+                <h3 className="text-base font-black uppercase tracking-wider">{catData3.name} Collection</h3>
               </div>
             </Link>
 
             <Link 
-              to="/shop?categoryProductId=7"
+              to={`/shop?categoryProductId=${catData4.id}`}
               className="group relative h-44 md:h-[11.5rem] overflow-hidden bg-neutral-100 flex items-end p-6 border border-neutral-100 select-none"
             >
               <img
-                src="https://images.unsplash.com/photo-1544816155-12df9643f363?w=600"
-                alt="Accessories"
+                src={catData4.image}
+                alt={catData4.name}
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-neutral-950/20 to-transparent z-10" />
               <div className="relative z-20 text-white flex flex-col gap-1">
-                <span className="text-[10px] font-bold font-mono tracking-widest text-neutral-300 uppercase">Caps, Bags & Wallets</span>
-                <h3 className="text-base font-black uppercase tracking-wider">Accessories Pack</h3>
+                <span className="text-[10px] font-bold font-mono tracking-widest text-neutral-300 uppercase">{catData4.description}</span>
+                <h3 className="text-base font-black uppercase tracking-wider">{catData4.name} Pack</h3>
               </div>
             </Link>
           </div>

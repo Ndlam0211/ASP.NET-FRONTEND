@@ -1,5 +1,5 @@
 import { axiosInstance, handleApiWithFallback } from "./api";
-import { MOCK_BLOG_POSTS } from "../constants/mockData";
+import { MOCK_BLOG_POSTS, MOCK_BLOG_CATEGORIES } from "../constants/mockData";
 
 export const postService = {
   getPosts: async (params) => {
@@ -13,6 +13,13 @@ export const postService = {
     return handleApiWithFallback(
       () => axiosInstance.get(`/api/Posts/${id}`),
       MOCK_BLOG_POSTS.find((p) => p.id === parseInt(id))
+    );
+  },
+
+  getBlogCategories: async () => {
+    return handleApiWithFallback(
+      () => axiosInstance.get("/api/Categories"),
+      MOCK_BLOG_CATEGORIES
     );
   }
 };
