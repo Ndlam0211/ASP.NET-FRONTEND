@@ -72,7 +72,7 @@ export const BlogDetailPage = () => {
       {/* Headings */}
       <header className="mb-8">
         <time className="text-[10px] font-bold font-mono tracking-wider text-neutral-400 uppercase block mb-3">
-          ATELIER CRITICAL STUDY • {new Date(post.createdDate).toLocaleDateString("en-US", { year: "numeric", month: "long" })}
+          ATELIER CRITICAL STUDY • {post.categoryName} • {new Date(post.createdDate).toLocaleDateString("en-US", { year: "numeric", month: "long" })}
         </time>
         <h1 className="text-2xl sm:text-4.5xl font-black text-neutral-950 uppercase tracking-wide leading-tight mb-4">
           {post.title}

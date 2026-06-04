@@ -279,13 +279,17 @@ export const HomePage = () => {
                   />
                 </Link>
                 <div className="p-5 flex flex-col gap-2 flex-grow">
-                  <time className="text-[10px] font-mono font-medium text-neutral-400">
-                    {new Date(post.createdDate).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric"
-                    })}
-                  </time>
+                  <div className="flex items-center gap-1.5 flex-wrap text-[10px] font-mono font-medium text-neutral-400">
+                    <time>
+                      {new Date(post.createdDate).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric"
+                      })}
+                    </time>
+                    <span>•</span>
+                    <span className="uppercase text-neutral-600 font-bold tracking-wider">{post.categoryName}</span>
+                  </div>
                   <h3 className="text-base font-bold text-neutral-900 leading-snug group-hover:text-neutral-600 transition-colors line-clamp-1">
                     <Link to={`/blog/${post.id}`}>{post.title}</Link>
                   </h3>

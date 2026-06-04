@@ -75,7 +75,7 @@ export const BlogListPage = () => {
               </Link>
 
               <div className="p-6 flex flex-col gap-3 flex-grow">
-                <div className="flex gap-2 items-center text-[10px] font-mono text-neutral-400">
+                <div className="flex gap-2 items-center flex-wrap text-[10px] font-mono text-neutral-400">
                   <Clock size={11} />
                   <time>
                     {new Date(post.createdDate).toLocaleDateString("en-US", {
@@ -84,6 +84,8 @@ export const BlogListPage = () => {
                       day: "numeric"
                     })}
                   </time>
+                  <span>•</span>
+                  <span className="uppercase text-neutral-600 font-bold tracking-wider">{post.categoryName}</span>
                 </div>
 
                 <h3 className="text-base sm:text-lg font-bold text-neutral-900 leading-snug group-hover:text-neutral-600 transition-colors line-clamp-1">
