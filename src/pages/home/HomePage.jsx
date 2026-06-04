@@ -14,9 +14,12 @@ export const HomePage = () => {
   const [latestPosts, setLatestPosts] = useState([]);
   const [postsLoading, setPostsLoading] = useState(false);
 
-  // Load Featured products (limit to 4) and Latest articles
+  const latestProducts = products.slice(0, 4);
+  const featuredProducts = products.length > 4 ? products.slice(4, 8) : products;
+
+  // Load Latest and Featured products (limit to 8) and Latest articles
   useEffect(() => {
-    dispatch(getProductsThunk({ page: 1, pageSize: 4 }));
+    dispatch(getProductsThunk({ page: 1, pageSize: 8 }));
 
     const fetchLatestPosts = async () => {
       setPostsLoading(true);
@@ -167,10 +170,30 @@ export const HomePage = () => {
         </div>
       </section>
 
-      {/* 3. FEATURED PRODUCTS GRID */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      {/* 3. LATEST ARRIVALS GRID */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full border-t border-neutral-100 pt-16">
         <div className="text-center sm:text-left mb-8">
-          <h2 className="text-xl sm:text-2xl font-black text-neutral-900 uppercase tracking-wider">
+          <span className="text-[10px] font-bold font-mono tracking-widest text-neutral-400 uppercase">
+            New Releases
+          </span>
+          <h2 className="text-xl sm:text-2xl font-black text-neutral-900 uppercase tracking-wider mt-1">
+            New Releases
+          </h2>
+          <p className="text-xs text-neutral-400 font-mono mt-1">
+            The newest curated editions fresh from our design studio.
+          </p>
+        </div>
+        
+        <ProductGrid products={latestProducts} loading={productsLoading} categories={categories} />
+      </section>
+
+      {/* 3.1. FEATURED PRODUCTS GRID */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full border-t border-neutral-100 pt-16">
+        <div className="text-center sm:text-left mb-8">
+          <span className="text-[10px] font-bold font-mono tracking-widest text-neutral-400 uppercase">
+            Selected Staples
+          </span>
+          <h2 className="text-xl sm:text-2xl font-black text-neutral-900 uppercase tracking-wider mt-1">
             Featured Staples
           </h2>
           <p className="text-xs text-neutral-400 font-mono mt-1">
@@ -178,7 +201,7 @@ export const HomePage = () => {
           </p>
         </div>
         
-        <ProductGrid products={products} loading={productsLoading} categories={categories} />
+        <ProductGrid products={featuredProducts} loading={productsLoading} categories={categories} />
       </section>
 
       {/* VALUE SIGNALS GRID Section */}

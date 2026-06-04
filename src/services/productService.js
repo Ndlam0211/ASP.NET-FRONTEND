@@ -28,6 +28,9 @@ export const productService = {
           items.sort((a, b) => a.price - b.price);
         } else if (params?.sortPrice === "desc") {
           items.sort((a, b) => b.price - a.price);
+        } else {
+          // Sort by latest (ID descending) by default to match C# API behavior
+          items.sort((a, b) => b.id - a.id);
         }
 
         // Handle simple client-side pagination mimic
