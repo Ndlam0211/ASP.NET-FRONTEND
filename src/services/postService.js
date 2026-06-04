@@ -1,25 +1,15 @@
-import { axiosInstance, handleApiWithFallback } from "./api";
-import { MOCK_BLOG_POSTS, MOCK_BLOG_CATEGORIES } from "../constants/mockData";
+import { axiosInstance } from "./api";
 
 export const postService = {
   getPosts: async (params) => {
-    return handleApiWithFallback(
-      () => axiosInstance.get("/api/Posts", { params }),
-      MOCK_BLOG_POSTS
-    );
+    return axiosInstance.get("/api/Posts", { params });
   },
 
   getPostById: async (id) => {
-    return handleApiWithFallback(
-      () => axiosInstance.get(`/api/Posts/${id}`),
-      MOCK_BLOG_POSTS.find((p) => p.id === parseInt(id))
-    );
+    return axiosInstance.get(`/api/Posts/${id}`);
   },
 
   getBlogCategories: async () => {
-    return handleApiWithFallback(
-      () => axiosInstance.get("/api/Categories"),
-      MOCK_BLOG_CATEGORIES
-    );
+    return axiosInstance.get("/api/Categories");
   }
 };

@@ -18,11 +18,11 @@ export const ProductGrid = ({ products = [], loading = false, categories = [] })
     return (
       <div className="flex flex-col items-center justify-center py-16 px-4 border border-dashed border-neutral-200">
         <FolderHeart className="text-neutral-300 w-12 h-12 mb-4 stroke-1" />
-        <h3 className="text-lg font-medium text-neutral-800 mb-1">
-          No Products Found
+        <h3 className="text-sm font-bold uppercase tracking-wider text-neutral-800 mb-1">
+          Không có dữ liệu để hiển thị
         </h3>
-        <p className="text-sm text-neutral-500 text-center max-w-sm">
-          We couldn't find any products in this category matching your search criteria. Try clearing some filters.
+        <p className="text-xs text-neutral-400 text-center max-w-sm">
+          Chúng tôi không tìm thấy sản phẩm nào trong danh mục này phù hợp với tiêu chí của bạn.
         </p>
       </div>
     );

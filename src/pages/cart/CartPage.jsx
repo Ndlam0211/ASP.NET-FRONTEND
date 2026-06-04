@@ -72,10 +72,10 @@ export const CartPage = () => {
           <ShoppingBag className="w-12 h-12 text-neutral-400 stroke-1" />
         </div>
         <h2 className="text-xl sm:text-2xl font-black text-neutral-900 uppercase tracking-widest mb-2">
-          Your Bag Is Empty
+          Không có dữ liệu để hiển thị
         </h2>
         <p className="text-sm text-neutral-500 max-w-sm mb-8 leading-relaxed">
-          Looks like you haven't added any Atelier pieces to your shopping bag yet. Let's find some premium basics!
+          Giỏ hàng của bạn đang trống. Hãy quay lại cửa hàng để chọn cho mình những sản phẩm cao cấp chính hãng từ Atelier!
         </p>
         <Link 
           to="/shop" 

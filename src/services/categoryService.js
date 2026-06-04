@@ -1,11 +1,7 @@
-import { axiosInstance, handleApiWithFallback } from "./api";
-import { MOCK_CATEGORIES } from "../constants/mockData";
+import { axiosInstance } from "./api";
 
 export const categoryService = {
   getCategories: async () => {
-    return handleApiWithFallback(
-      () => axiosInstance.get("/api/CategoriesProducts"),
-      MOCK_CATEGORIES
-    );
+    return axiosInstance.get("/api/CategoriesProducts");
   }
 };

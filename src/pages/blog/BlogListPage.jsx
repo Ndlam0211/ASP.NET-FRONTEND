@@ -111,8 +111,12 @@ export const BlogListPage = () => {
       ) : filteredPosts.length === 0 ? (
         <div className="max-w-md mx-auto text-center py-12">
           <BookOpen className="text-neutral-300 w-12 h-12 mb-4 mx-auto stroke-1" />
-          <h3 className="text-sm font-bold uppercase text-neutral-800">No entries found</h3>
-          <p className="text-xs text-neutral-400 mt-1">Please explore our other categories or check back later.</p>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-800">
+            Không có dữ liệu để hiển thị
+          </h3>
+          <p className="text-xs text-neutral-400 mt-1">
+            Hiện không có bài viết nào phù hợp với danh mục này. Vui lòng quay lại sau.
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">

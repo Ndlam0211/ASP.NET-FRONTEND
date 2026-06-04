@@ -32,14 +32,15 @@ export const registerUser = createAsyncThunk(
     try {
       const data = await authService.register(userData);
       // Auto login after registered
-      if (data.customer) {
+      if (data && (data.customer || data.id)) {
+        const customerData = data.customer || data;
         const sessionUser = {
-          id: data.customer.id,
-          fullName: data.customer.fullName,
-          email: data.customer.email,
-          phone: data.customer.phone,
-          address: data.customer.address,
-          token: "offline-mock-token-session"
+          id: customerData.id,
+          fullName: customerData.fullName,
+          email: customerData.email,
+          phone: customerData.phone,
+          address: customerData.address,
+          token: data.token || "api-session-token"
         };
         localStorage.setItem("customer_user", JSON.stringify(sessionUser));
         return sessionUser;

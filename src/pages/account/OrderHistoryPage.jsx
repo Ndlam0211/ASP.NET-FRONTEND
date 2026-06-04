@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { 
-  PackageCheck, 
   MapPin, 
   Clock, 
   ArrowRight, 
@@ -128,13 +127,13 @@ export const OrderHistoryPage = () => {
       ) : orders.length === 0 ? (
         <div className="max-w-md mx-auto text-center py-16 flex flex-col items-center">
           <div className="p-4 bg-neutral-50 rounded-full mb-4">
-            <PackageCheck className="w-10 h-10 text-neutral-350 stroke-1" />
+            <ShoppingBag className="w-10 h-10 text-neutral-350 stroke-1" />
           </div>
-          <h3 className="text-sm font-bold uppercase tracking-widest text-neutral-800">
-            No Purchases Placed Yet
+          <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-800">
+            Không có dữ liệu để hiển thị
           </h3>
           <p className="text-xs text-neutral-400 mt-1 mb-6 leading-relaxed max-w-xs">
-            Your e-commerce ledger has no records yet. When you place a cash of delivery order, they show up here instantly.
+            Bạn chưa thực hiện đơn đặt sản phẩm nào. Khi bạn tiến hành đặt hàng, lịch sử đơn hàng sẽ hiện lên tại đây.
           </p>
           <Link 
             to="/shop" 
