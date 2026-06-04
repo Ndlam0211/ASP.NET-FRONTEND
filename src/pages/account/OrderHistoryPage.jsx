@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
@@ -9,7 +9,9 @@ import {
   ArrowRight, 
   ShoppingBag,
   CircleAlert,
-  Loader
+  Loader,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { getOrderHistoryThunk } from "../../store/slices/orderSlice";
 
@@ -21,6 +23,10 @@ export const OrderHistoryPage = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const { orders, historyLoading, historyError } = useSelector((state) => state.orders);
 
+  // Pagination states for high volume orders
+  const [currentPage, setCurrentPage] = useState(1);
+  const ordersPerPage = 5;
+
   // Redirect to login if guest tries to view accounts
   useEffect(() => {
     if (!isAuthenticated) {
@@ -29,6 +35,25 @@ export const OrderHistoryPage = () => {
       dispatch(getOrderHistoryThunk(user.id));
     }
   }, [isAuthenticated, user, dispatch, navigate]);
+
+  const totalOrders = orders ? orders.length : 0;
+  const totalPages = Math.ceil(totalOrders / ordersPerPage);
+
+  // Auto-correct page bound if elements are deleted or updated
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
+
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = orders ? orders.slice(indexOfFirstOrder, indexOfLastOrder) : [];
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const getStatusBadge = (status) => {
     switch (status) {
@@ -120,7 +145,7 @@ export const OrderHistoryPage = () => {
         </div>
       ) : (
         <div className="flex flex-col gap-8">
-          {orders.map((order) => (
+          {currentOrders.map((order) => (
             <div 
               key={order.id}
               className="border border-neutral-150 p-6 flex flex-col gap-6 bg-white hover:shadow-subtlest transition-shadow shadow-xs"
@@ -182,6 +207,66 @@ export const OrderHistoryPage = () => {
 
             </div>
           ))}
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between border-t border-neutral-100 pt-6 mt-4 gap-4">
+              <span className="text-xs font-mono text-neutral-400">
+                Trang lịch sử <strong className="text-neutral-900 font-bold">{currentPage}</strong> / <strong className="text-neutral-900 font-bold">{totalPages}</strong> (Tổng cộng {totalOrders} đơn hàng)
+              </span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
+                  disabled={currentPage === 1}
+                  className={`px-3 py-2 border text-xs font-mono font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-1 ${
+                    currentPage === 1
+                      ? "bg-neutral-50 border-neutral-200 text-neutral-300 cursor-not-allowed"
+                      : "bg-white border-neutral-200 text-neutral-600 hover:border-neutral-400 hover:text-neutral-900"
+                  }`}
+                >
+                  <ChevronLeft size={14} />
+                  Prev
+                </button>
+
+                {Array.from({ length: totalPages }).map((_, idx) => {
+                  const pageNumber = idx + 1;
+                  // Handle hiding too many page numbers if totalPages > 5
+                  if (totalPages > 5 && Math.abs(currentPage - pageNumber) > 1 && pageNumber !== 1 && pageNumber !== totalPages) {
+                    if (pageNumber === 2 || pageNumber === totalPages - 1) {
+                      return <span key={`dots-${pageNumber}`} className="text-neutral-300 font-mono px-1">...</span>;
+                    }
+                    return null;
+                  }
+                  return (
+                    <button
+                      key={pageNumber}
+                      onClick={() => handlePageChange(pageNumber)}
+                      className={`w-9 h-9 border text-xs font-mono font-bold transition-all duration-300 ${
+                        currentPage === pageNumber
+                          ? "bg-neutral-900 border-neutral-900 text-white"
+                          : "bg-white border-neutral-200 text-neutral-600 hover:border-neutral-400 hover:text-neutral-900"
+                      }`}
+                    >
+                      {pageNumber}
+                    </button>
+                  );
+                })}
+
+                <button
+                  onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className={`px-3 py-2 border text-xs font-mono font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-1 ${
+                    currentPage === totalPages
+                      ? "bg-neutral-50 border-neutral-200 text-neutral-300 cursor-not-allowed"
+                      : "bg-white border-neutral-200 text-neutral-600 hover:border-neutral-400 hover:text-neutral-900"
+                  }`}
+                >
+                  Next
+                  <ChevronRight size={14} />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
