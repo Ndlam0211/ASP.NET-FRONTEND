@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, BookOpen, Clock } from "lucide-react";
+import { ArrowRight, BookOpen, Clock, ChevronLeft, ChevronRight } from "lucide-react";
 import { postService } from "../../services/postService";
 import { PostCard } from "../../components/blog/PostCard";
 
@@ -10,6 +10,10 @@ export const BlogListPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 6;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,9 +34,26 @@ export const BlogListPage = () => {
     fetchData();
   }, []);
 
+  // Reset page when category changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory]);
+
   const filteredPosts = selectedCategory === "All"
     ? posts
     : posts.filter(post => post.categoryName === selectedCategory);
+
+  const totalPosts = filteredPosts.length;
+  const totalPages = Math.ceil(totalPosts / postsPerPage);
+
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -119,10 +140,72 @@ export const BlogListPage = () => {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
-          {filteredPosts.map((post) => (
-            <PostCard key={post.id} post={post} />
-          ))}
+        <div className="flex flex-col gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+            {currentPosts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between border-t border-neutral-100 pt-8 mt-4 gap-4">
+              <span className="text-xs font-mono text-neutral-400 font-medium">
+                Trang <strong className="text-neutral-900 font-bold">{currentPage}</strong> / <strong className="text-neutral-900 font-bold">{totalPages}</strong> (Tổng cộng {totalPosts} bài viết)
+              </span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
+                  disabled={currentPage === 1}
+                  className={`px-3 py-2 border text-[10px] font-mono font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-1 ${
+                    currentPage === 1
+                      ? "bg-neutral-50 border-neutral-200 text-neutral-300 cursor-not-allowed"
+                      : "bg-white border-neutral-200 text-neutral-600 hover:border-neutral-400 hover:text-neutral-900"
+                  }`}
+                >
+                  <ChevronLeft size={14} />
+                  Prev
+                </button>
+
+                {Array.from({ length: totalPages }).map((_, idx) => {
+                  const pageNumber = idx + 1;
+                  // Handle hiding too many page numbers if totalPages > 5
+                  if (totalPages > 5 && Math.abs(currentPage - pageNumber) > 1 && pageNumber !== 1 && pageNumber !== totalPages) {
+                    if (pageNumber === 2 || pageNumber === totalPages - 1) {
+                      return <span key={`dots-${pageNumber}`} className="text-neutral-300 font-mono px-1">...</span>;
+                    }
+                    return null;
+                  }
+                  return (
+                    <button
+                      key={pageNumber}
+                      onClick={() => handlePageChange(pageNumber)}
+                      className={`w-9 h-9 border text-xs font-mono font-bold transition-all duration-300 ${
+                        currentPage === pageNumber
+                          ? "bg-neutral-900 border-neutral-900 text-white"
+                          : "bg-white border-neutral-200 text-neutral-600 hover:border-neutral-400 hover:text-neutral-900"
+                      }`}
+                    >
+                      {pageNumber}
+                    </button>
+                  );
+                })}
+
+                <button
+                  onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className={`px-3 py-2 border text-[10px] font-mono font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-1 ${
+                    currentPage === totalPages
+                      ? "bg-neutral-50 border-neutral-200 text-neutral-300 cursor-not-allowed"
+                      : "bg-white border-neutral-200 text-neutral-600 hover:border-neutral-400 hover:text-neutral-900"
+                  }`}
+                >
+                  Next
+                  <ChevronRight size={14} />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
